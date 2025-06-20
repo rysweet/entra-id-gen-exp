@@ -1,0 +1,35 @@
+{
+  "name": "Test Corporation",
+  "domain": "test.com",
+  "industry": "Technology",
+  "size": "small",
+  "description": "A small test company for faster testing",
+  "complexity": "simple",
+  "departments": [
+    "Engineering",
+    "Sales"
+  ],
+  "roles": [
+    {
+      "name": "Software Engineer",
+      "department": "Engineering",
+      "count": 3,
+      "seniority_level": "mid",
+      "permissions": ["developers", "code_access"]
+    },
+    {
+      "name": "Senior Software Engineer",
+      "department": "Engineering",
+      "count": 1,
+      "seniority_level": "senior",
+      "permissions": ["developers", "code_access", "review_access"]
+    },
+    {
+      "name": "Sales Representative",
+      "department": "Sales",
+      "count": 2,
+      "seniority_level": "junior",
+      "permissions": ["sales_tools", "customer_data"]
+    }
+  ]
+}

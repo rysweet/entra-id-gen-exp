@@ -7,12 +7,15 @@ authors = [
 ]
 readme = "README.md"
 license = { text = "MIT" }
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "rich>=13.0.0",
     "msgraph-sdk>=1.0.0",
+    "azure-identity>=1.15.0",
     "python-dotenv>=1.0.0",
     "pydantic>=2.0.0",
+    "pyyaml>=6.0.0",
+    "tenacity>=8.0.0",
 ]
 
 [project.optional-dependencies]
@@ -21,6 +24,17 @@ dev = [
     "pyright>=1.1.0",
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.10.0",
+    "pytest-cov>=4.0.0",
+    "pytest-xdist>=3.0.0",
+]
+
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.10.0",
+    "pytest-cov>=4.0.0",
+    "pytest-xdist>=3.0.0",
 ]
 
 [project.scripts]
@@ -67,5 +81,21 @@ addopts = [
     "-v",
     "--strict-markers",
     "--strict-config",
-    "--disable-warnings"
+    "--tb=short",
+    "--durations=10"
+]
+markers = [
+    "unit: Unit tests that don't require external dependencies",
+    "integration: Integration tests that may require mocked Azure services",
+    "slow: Tests that take a longer time to run",
+    "azure: Tests that interact with Azure services (mocked)",
+]
+asyncio_mode = "auto"
+log_cli = false
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
 ]

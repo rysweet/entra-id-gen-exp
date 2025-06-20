@@ -1,0 +1,14 @@
+{
+  "name": "Minimal Corp",
+  "domain": "minimal.com",
+  "industry": "Technology",
+  "size": "small",
+  "roles": [
+    {
+      "name": "Developer",
+      "department": "IT",
+      "count": 1,
+      "seniority_level": "mid"
+    }
+  ]
+}

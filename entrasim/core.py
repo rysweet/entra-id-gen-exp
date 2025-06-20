@@ -1,6 +1,7 @@
 """Core business logic for EntraSim."""
 
 import json
+import logging
 from pathlib import Path
 try:
     import yaml
@@ -11,8 +12,10 @@ from rich.console import Console
 
 from .models import CompanyDescription, SimulationPlan
 from .config import Config
+from .azure_client import create_azure_client
 
 console = Console()
+logger = logging.getLogger(__name__)
 
 
 class EntraSimCore:
@@ -21,6 +24,7 @@ class EntraSimCore:
     def __init__(self, config: Config):
         """Initialize with configuration."""
         self.config = config
+        self.azure_client = None
     
     def validate_input(self, input_file: Path) -> bool:
         """Validate input file format and content."""
@@ -38,6 +42,7 @@ class EntraSimCore:
             return True
         except Exception as e:
             console.print(f"[red]Error validating input file: {e}[/red]")
+            logger.error(f"Error validating input file: {e}")
             return False
     
     def parse_company_description(self, input_file: Path) -> CompanyDescription:
@@ -98,57 +103,96 @@ class EntraSimCore:
             return plan
             
         except Exception as e:
+            logger.error(f"Error generating simulation plan: {e}")
             raise ValueError(f"Error generating simulation plan: {e}")
     
     def validate_azure_connection(self) -> bool:
         """Validate Azure connection and credentials."""
         try:
-            # For now, just validate that credentials are present
-            # In a full implementation, this would test actual Azure connectivity
+            # Validate that credentials are present
             self.config.validate_required_credentials()
             
             console.print("[green]✓ Azure credentials validated[/green]")
             console.print(f"  Tenant ID: {self.config.azure_tenant_id}")
             console.print(f"  Subscription ID: {self.config.azure_subscription_id}")
             
-            return True
+            # Test actual connectivity by creating and testing the Azure client
+            try:
+                self.azure_client = create_azure_client(self.config)
+                if self.azure_client.authenticate():
+                    console.print("[green]✓ Azure authentication successful[/green]")
+                    return True
+                else:
+                    console.print("[red]Azure authentication failed[/red]")
+                    return False
+            except Exception as auth_error:
+                console.print(f"[red]Azure authentication error: {auth_error}[/red]")
+                logger.error(f"Azure authentication error: {auth_error}")
+                return False
             
         except Exception as e:
             console.print(f"[red]Error validating Azure connection: {e}[/red]")
+            logger.error(f"Error validating Azure connection: {e}")
             return False
     
     def execute_simulation_plan(self, plan: SimulationPlan) -> bool:
-        """Execute the simulation plan (placeholder implementation)."""
-        if self.config.dry_run:
-            console.print("[yellow]DRY RUN MODE - No actual changes will be made[/yellow]")
-        
+        """Execute the simulation plan using real Azure operations."""
         try:
             console.print(f"[blue]Executing simulation plan for {plan.company.name}...[/blue]")
             
-            # Placeholder implementation - in reality this would call azure_client
-            console.print(f"[yellow]Creating {plan.total_groups} groups...[/yellow]")
-            for group in plan.groups_to_create:
-                if self.config.dry_run:
-                    console.print(f"  [dim]Would create group: {group}[/dim]")
-                else:
-                    console.print(f"  [green]✓ Created group: {group}[/green]")
+            # Ensure we have an authenticated Azure client
+            if not self.azure_client:
+                self.azure_client = create_azure_client(self.config)
             
-            console.print(f"[yellow]Creating {plan.total_users} users...[/yellow]")
-            for user in plan.users_to_create:
-                if self.config.dry_run:
-                    console.print(f"  [dim]Would create user: {user['display_name']}[/dim]")
-                else:
-                    console.print(f"  [green]✓ Created user: {user['display_name']}[/green]")
+            # Execute the plan using the Azure client
+            success = self.azure_client.execute_simulation_plan(plan)
             
-            if self.config.dry_run:
-                console.print("[yellow]✓ Dry run completed successfully[/yellow]")
-            else:
+            if success:
                 console.print("[green]✓ Simulation plan executed successfully[/green]")
+                console.print(f"  Created {plan.total_groups} security groups")
+                console.print(f"  Created {plan.total_users} users")
+                console.print(f"  Configured group memberships")
+                
+                # Log important information for cleanup later
+                logger.info(f"Successfully created simulation for {plan.company.name}")
+                logger.info(f"Groups created: {', '.join(plan.groups_to_create)}")
+                logger.info(f"Users created: {len(plan.users_to_create)}")
+            else:
+                console.print("[red]Failed to execute simulation plan[/red]")
             
-            return True
+            return success
             
         except Exception as e:
             console.print(f"[red]Error executing simulation plan: {e}[/red]")
+            logger.error(f"Error executing simulation plan: {e}")
+            return False
+    
+    def cleanup_simulation(self, plan: SimulationPlan) -> bool:
+        """Clean up resources created by a simulation."""
+        try:
+            console.print(f"[yellow]Cleaning up simulation for {plan.company.name}...[/yellow]")
+            
+            # Ensure we have an authenticated Azure client
+            if not self.azure_client:
+                self.azure_client = create_azure_client(self.config)
+                if not self.azure_client.authenticate():
+                    console.print("[red]Failed to authenticate for cleanup[/red]")
+                    return False
+            
+            # Execute cleanup
+            import asyncio
+            success = asyncio.run(self.azure_client.cleanup_resources(plan))
+            
+            if success:
+                console.print("[green]✓ Simulation cleanup completed successfully[/green]")
+            else:
+                console.print("[red]Simulation cleanup encountered errors[/red]")
+            
+            return success
+            
+        except Exception as e:
+            console.print(f"[red]Error during cleanup: {e}[/red]")
+            logger.error(f"Error during cleanup: {e}")
             return False
 
 
@@ -187,4 +231,5 @@ def validate_input_file(input_file: Union[str, Path]) -> bool:
         
     except Exception as e:
         console.print(f"[red]Validation error: {e}[/red]")
+        logger.error(f"Validation error: {e}")
         return False
