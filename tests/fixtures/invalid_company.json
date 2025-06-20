@@ -1,0 +1,20 @@
+{
+  "name": "",
+  "domain": "invalid-domain-no-tld",
+  "industry": "",
+  "size": "invalid_size",
+  "roles": [
+    {
+      "name": "",
+      "department": "",
+      "count": -1,
+      "seniority_level": "invalid_level"
+    },
+    {
+      "name": "Valid Role",
+      "department": "Valid Dept",
+      "count": 0,
+      "seniority_level": "junior"
+    }
+  ]
+}
