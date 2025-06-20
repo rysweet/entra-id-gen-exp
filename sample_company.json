@@ -1,0 +1,109 @@
+{
+  "name": "Contoso Corporation",
+  "domain": "contoso.com",
+  "industry": "Technology",
+  "size": "medium",
+  "description": "A mid-sized technology company specializing in cloud solutions and software development",
+  "complexity": "medium",
+  "departments": [
+    "Engineering",
+    "Sales",
+    "Marketing",
+    "Human Resources",
+    "Finance",
+    "Operations"
+  ],
+  "roles": [
+    {
+      "name": "Software Engineer",
+      "department": "Engineering",
+      "count": 8,
+      "seniority_level": "mid",
+      "permissions": ["developers", "code_access"]
+    },
+    {
+      "name": "Senior Software Engineer",
+      "department": "Engineering",
+      "count": 4,
+      "seniority_level": "senior",
+      "permissions": ["developers", "code_access", "review_access"]
+    },
+    {
+      "name": "Engineering Manager",
+      "department": "Engineering",
+      "count": 2,
+      "seniority_level": "lead",
+      "permissions": ["developers", "management", "budget_access"]
+    },
+    {
+      "name": "Sales Representative",
+      "department": "Sales",
+      "count": 6,
+      "seniority_level": "mid",
+      "permissions": ["sales_tools", "customer_data"]
+    },
+    {
+      "name": "Sales Manager",
+      "department": "Sales",
+      "count": 2,
+      "seniority_level": "senior",
+      "permissions": ["sales_tools", "customer_data", "sales_reports"]
+    },
+    {
+      "name": "Marketing Specialist",
+      "department": "Marketing",
+      "count": 4,
+      "seniority_level": "mid",
+      "permissions": ["marketing_tools", "campaign_access"]
+    },
+    {
+      "name": "Marketing Manager",
+      "department": "Marketing",
+      "count": 1,
+      "seniority_level": "senior",
+      "permissions": ["marketing_tools", "campaign_access", "budget_access"]
+    },
+    {
+      "name": "HR Specialist",
+      "department": "Human Resources",
+      "count": 2,
+      "seniority_level": "mid",
+      "permissions": ["hr_systems", "employee_data"]
+    },
+    {
+      "name": "HR Manager",
+      "department": "Human Resources",
+      "count": 1,
+      "seniority_level": "senior",
+      "permissions": ["hr_systems", "employee_data", "payroll_access"]
+    },
+    {
+      "name": "Financial Analyst",
+      "department": "Finance",
+      "count": 2,
+      "seniority_level": "mid",
+      "permissions": ["finance_systems", "financial_data"]
+    },
+    {
+      "name": "Finance Manager",
+      "department": "Finance",
+      "count": 1,
+      "seniority_level": "senior",
+      "permissions": ["finance_systems", "financial_data", "budget_access"]
+    },
+    {
+      "name": "Operations Coordinator",
+      "department": "Operations",
+      "count": 3,
+      "seniority_level": "mid",
+      "permissions": ["operations_tools", "facility_access"]
+    },
+    {
+      "name": "Operations Manager",
+      "department": "Operations",
+      "count": 1,
+      "seniority_level": "senior",
+      "permissions": ["operations_tools", "facility_access", "vendor_management"]
+    }
+  ]
+}
