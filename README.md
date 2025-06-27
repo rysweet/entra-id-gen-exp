@@ -1,4 +1,4 @@
-# EntraSim - Azure Tenant and Identity Simulation Tool
+# (AI Generated Experiement) - EntraSim - Azure Tenant and Identity Simulation Tool
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/your-org/entrasim/actions)
 [![Python Version](https://img.shields.io/badge/python-3.10+-blue)](https://python.org)
